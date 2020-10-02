@@ -1,0 +1,28 @@
+class Solution {
+public:
+    int largestRectangleArea(vector<int>& histogram) {
+        int len=histogram.size();
+        if(len ==0 )    return 0;
+        int left_smaller[len],right_smaller[len];
+        stack<int> st;
+        for(int it=0;it<len;it++){
+            while((!st.empty()) && histogram[st.top()] >= histogram[it])    st.pop();
+            if(st.empty())  left_smaller[it] = -1;
+            else left_smaller[it] = st.top();
+            st.push(it);
+        }
+        while(!st.empty())  st.pop();
+        for(int it=len-1;it>=0;it--){
+            while((!st.empty()) && histogram[st.top()] >= histogram[it])    st.pop();
+            if(st.empty())  right_smaller[it] = len;
+            else right_smaller[it] = st.top();
+            st.push(it);
+        }
+        int max_area=0;
+        for(int it=0;it<len;it++){
+            int temp_area = (right_smaller[it] - left_smaller[it] -1)* histogram[it];
+            max_area = max(max_area,temp_area);
+        }
+        return max_area;
+    }
+};
